@@ -109,7 +109,7 @@ public class Response implements HttpServletResponse{
 	@Override
 	public PrintWriter getWriter() throws IOException {
 		// TODO Auto-generated method stub
-		return new PrintWriter(ou);
+		return new PrintWriter(ou,true);
 	}
 
 	@Override
