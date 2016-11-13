@@ -8,6 +8,11 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import javax.servlet.ServletException;
+
+import com.hsm.Processor.ServletProcessor;
+import com.hsm.Processor.StaticResourceProcessor;
+
 
 public class HttpServer {
 	public static String SHUTDOWN_COMMAND = "/shutdown";
@@ -38,7 +43,17 @@ public class HttpServer {
 				request.prase();
 				Response response = new Response(ou);
 				response.setRequest(request);
-				response.sendStaticResource();
+				if(request.getUrl()!=null&&request.getUrl().startsWith("/servlet")){
+					ServletProcessor servletProcessor = new ServletProcessor();
+					try {
+						servletProcessor.servletProcess(request,response);
+					} catch (ServletException e) {
+						e.printStackTrace();
+					}
+				}else{
+					StaticResourceProcessor processor = new StaticResourceProcessor();
+					processor.process(request,response);
+				}
 				socket.close();
 				shutdown = SHUTDOWN_COMMAND.equals(request.getUrl());
 			} catch (IOException e) {
