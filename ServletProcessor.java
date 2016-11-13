@@ -14,7 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.hsm.HttpServer;
 import com.hsm.Request;
+import com.hsm.RequestFacade;
 import com.hsm.Response;
+import com.hsm.ResponseFacade;
 
 public class ServletProcessor {
 
@@ -24,16 +26,16 @@ public class ServletProcessor {
 		URL[] urls = new URL[1];
 		URLStreamHandler urlStreamHandler = null;
 		URLClassLoader loader = null;
+		RequestFacade requestFacade = new RequestFacade(request);
+		ResponseFacade responseFacade = new ResponseFacade(response);
 		try {
 		File servletpath = new File(HttpServer.WEB_ROOT);
-		System.out.println(servletName);
 		String repository = (new URL("file",null,servletpath.getCanonicalPath()+File.separator)).toString();
 		urls[0] = new URL(null, repository, urlStreamHandler);
 		loader = new URLClassLoader(urls);
-		System.out.println(repository);
 		Class<Servlet> myclass = (Class<Servlet>) loader.loadClass(servletName);
 		Servlet servlet = myclass.newInstance();
-		servlet.service((HttpServletRequest)request, (HttpServletResponse)response);
+		servlet.service(requestFacade, responseFacade);
 		}
 		catch (ClassNotFoundException e) {
 			e.printStackTrace();
