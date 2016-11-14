@@ -23,7 +23,7 @@ public class Response implements HttpServletResponse{
 	
 	public void sendStaticResource(){
 		FileInputStream fis = null;
-		File file = new File(HttpServer.WEB_ROOT,"/"+request.getUrl());
+		File file = new File(HttpProcessor.WEB_ROOT,"/"+request.getUrl());
 		if(file.exists()){
 			byte[] b = new byte[Buffer_Size];
 			try {
