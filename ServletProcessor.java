@@ -12,7 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.hsm.HttpServer;
+import com.hsm.HttpProcessor;
 import com.hsm.Request;
 import com.hsm.RequestFacade;
 import com.hsm.Response;
@@ -29,7 +29,7 @@ public class ServletProcessor {
 		RequestFacade requestFacade = new RequestFacade(request);
 		ResponseFacade responseFacade = new ResponseFacade(response);
 		try {
-		File servletpath = new File(HttpServer.WEB_ROOT);
+		File servletpath = new File(HttpProcessor.WEB_ROOT);
 		String repository = (new URL("file",null,servletpath.getCanonicalPath()+File.separator)).toString();
 		urls[0] = new URL(null, repository, urlStreamHandler);
 		loader = new URLClassLoader(urls);
