@@ -57,4 +57,7 @@ public class HttpProcessor {
 			e.printStackTrace();
 		}
 	}
+	private void praseRequest(Socket socket){
+		
+	}
 }
