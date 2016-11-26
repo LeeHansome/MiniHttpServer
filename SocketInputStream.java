@@ -147,10 +147,10 @@ public class SocketInputStream extends InputStream {
 				pos = 0;
 				readStart = 0;
 			}
-			if (buf[pos] == SP) {
-				space = true;
-			} else if (buf[pos] == CR) {
-
+			if (buf[pos] == CR) {
+				
+			} else if (buf[pos] == LF) {
+				eol = true;
 			} else {
 				requestLine.protocol[readCount] = (char) buf[pos];
 				readCount++;

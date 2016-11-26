@@ -14,22 +14,25 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.hsm.HttpProcessor;
 import com.hsm.Request;
-import com.hsm.RequestFacade;
 import com.hsm.Response;
-import com.hsm.ResponseFacade;
+import com.hsm.connector.http.Constants;
+import com.hsm.connector.http.HttpRequest;
+import com.hsm.connector.http.HttpRequestFacade;
+import com.hsm.connector.http.HttpResponse;
+import com.hsm.connector.http.HttpResponseFacade;
 
 public class ServletProcessor {
 
-	public void servletProcess(Request request, Response response) throws ServletException, IOException {
+	public void servletProcess(HttpRequest request, HttpResponse response) throws ServletException, IOException {
 		String url = request.getUrl();
 		String servletName = url.substring(url.lastIndexOf("/")+1);
 		URL[] urls = new URL[1];
 		URLStreamHandler urlStreamHandler = null;
 		URLClassLoader loader = null;
-		RequestFacade requestFacade = new RequestFacade(request);
-		ResponseFacade responseFacade = new ResponseFacade(response);
+		HttpRequestFacade requestFacade = new HttpRequestFacade(request);
+		HttpResponseFacade responseFacade = new HttpResponseFacade(response);
 		try {
-		File servletpath = new File(HttpProcessor.WEB_ROOT);
+		File servletpath = new File(Constants.WEB_ROOT);
 		String repository = (new URL("file",null,servletpath.getCanonicalPath()+File.separator)).toString();
 		urls[0] = new URL(null, repository, urlStreamHandler);
 		loader = new URLClassLoader(urls);

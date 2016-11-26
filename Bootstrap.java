@@ -1,4 +1,4 @@
-package com.hsm.boot;
+package com.hsm.setup;
 
 import com.hsm.connector.http.Httpconnector;
 

@@ -72,5 +72,8 @@ public final class HttpRequestLine {
         return false;
     }
 */
+	public int indexOf(String string) {
+		return indexOf(string.toCharArray());
+	}
     
 }

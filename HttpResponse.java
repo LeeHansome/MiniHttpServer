@@ -1,4 +1,4 @@
-package com.hsm;
+package com.hsm.connector.http;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,14 +12,12 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import com.hsm.connector.http.Constants;
-
-public class Response implements HttpServletResponse{
+public class HttpResponse implements HttpServletResponse{
 	private OutputStream ou = null;
-	private Request request = null;
+	private HttpRequest request = null;
 	private int Buffer_Size = 1024;
 	
-	public Response(OutputStream ou){
+	public HttpResponse(OutputStream ou){
 		this.ou = ou;
 	}
 	
@@ -65,10 +63,10 @@ public class Response implements HttpServletResponse{
 	public void setOu(OutputStream ou) {
 		this.ou = ou;
 	}
-	public Request getRequest() {
+	public HttpRequest getRequest() {
 		return request;
 	}
-	public void setRequest(Request request) {
+	public void setRequest(HttpRequest request) {
 		this.request = request;
 	}
 
