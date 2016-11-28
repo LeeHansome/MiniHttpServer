@@ -37,10 +37,15 @@ public class HttpRequestFacade implements HttpServletRequest {
 	}
 
 	@Override
+	public void setCharacterEncoding(String arg0)
+			throws UnsupportedEncodingException {
+		request.setCharacterEncoding(arg0);
+	}
+
+	@Override
 	public int getContentLength() {
 		return request.getContentLength();
 	}
-
 
 	@Override
 	public String getContentType() {
@@ -182,12 +187,6 @@ public class HttpRequestFacade implements HttpServletRequest {
 	@Override
 	public void setAttribute(String arg0, Object arg1) {
 		request.setAttribute(arg0, arg1);
-	}
-
-	@Override
-	public void setCharacterEncoding(String arg0)
-			throws UnsupportedEncodingException {
-		request.setCharacterEncoding(arg0);
 	}
 
 	@Override

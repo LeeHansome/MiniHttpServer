@@ -1,10 +1,10 @@
 package com.hsm.connector.http;
 
+import org.apache.catalina.util.StringManager;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.apache.catalina.util.StringManager;
 
 public class SocketInputStream extends InputStream {
 	private static final byte CR = (byte) '\r';
@@ -13,8 +13,9 @@ public class SocketInputStream extends InputStream {
 	private static final byte HT = (byte) '\t';
 	private static final byte COLON = (byte) ':';
 	private static final int LC_OFFSET = 'A' - 'a';
-
-	protected byte buf[];
+    protected static StringManager sm = StringManager
+            .getManager(Constants.Package);
+    protected byte buf[];
 	protected int count;
 	protected int pos;
 	protected InputStream is;
@@ -23,9 +24,6 @@ public class SocketInputStream extends InputStream {
 		this.is = is;
 		buf = new byte[bufferSize];
 	}
-
-	protected static StringManager sm = StringManager
-			.getManager(Constants.Package);
 
 	public void readRequestLine(HttpRequestLine requestLine) throws IOException {
 		if (requestLine.methodEnd != 0)

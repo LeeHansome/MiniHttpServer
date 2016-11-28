@@ -1,13 +1,12 @@
 package com.hsm.connector.http;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Locale;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 
 
 public class HttpResponseFacade implements HttpServletResponse {
@@ -27,8 +26,18 @@ public class HttpResponseFacade implements HttpServletResponse {
 	}
 
 	@Override
+	public void setBufferSize(int arg0) {
+		response.setBufferSize(arg0);
+	}
+
+	@Override
 	public String getCharacterEncoding() {
 		return response.getCharacterEncoding();
+	}
+
+	@Override
+	public void setCharacterEncoding(String arg0) {
+		response.setCharacterEncoding(arg0);
 	}
 
 	@Override
@@ -37,8 +46,18 @@ public class HttpResponseFacade implements HttpServletResponse {
 	}
 
 	@Override
+	public void setContentType(String arg0) {
+		response.setContentType(arg0);
+	}
+
+	@Override
 	public Locale getLocale() {
 		return response.getLocale();
+	}
+
+	@Override
+	public void setLocale(Locale arg0) {
+		response.setLocale(arg0);
 	}
 
 	@Override
@@ -67,30 +86,8 @@ public class HttpResponseFacade implements HttpServletResponse {
 	}
 
 	@Override
-	public void setBufferSize(int arg0) {
-		response.setBufferSize(arg0);
-	}
-
-	@Override
-	public void setCharacterEncoding(String arg0) {
-		response.setCharacterEncoding(arg0);
-	}
-
-	@Override
 	public void setContentLength(int arg0) {
 		response.setContentLength(arg0);
-	}
-
-
-
-	@Override
-	public void setContentType(String arg0) {
-		response.setContentType(arg0);
-	}
-
-	@Override
-	public void setLocale(Locale arg0) {
-		response.setLocale(arg0);
 	}
 
 	@Override
@@ -169,11 +166,6 @@ public class HttpResponseFacade implements HttpServletResponse {
 	}
 
 	@Override
-	public void setStatus(int arg0) {
-		response.setStatus(arg0);
-	}
-
-	@Override
 	public void setStatus(int arg0, String arg1) {
 		response.setStatus(arg0);
 	}
@@ -181,6 +173,11 @@ public class HttpResponseFacade implements HttpServletResponse {
 	@Override
 	public int getStatus() {
 		return 0;
+	}
+
+	@Override
+	public void setStatus(int arg0) {
+		response.setStatus(arg0);
 	}
 
 	@Override

@@ -1,42 +1,24 @@
 package com.hsm.connector.http;
 
+import com.hsm.Processor.ServletProcessor;
+import com.hsm.Processor.StaticResourceProcessor;
+import org.apache.catalina.util.StringManager;
+
+import javax.servlet.ServletException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
 
-
-
-
-
-
-
-
-
-
-import org.apache.catalina.util.StringManager;
-import com.hsm.connector.http.HttpHeader;
-import com.hsm.Processor.ServletProcessor;
-import com.hsm.Processor.StaticResourceProcessor;
-import com.hsm.connector.http.HttpRequest;
-import com.hsm.connector.http.HttpRequestLine;
-import com.hsm.connector.http.HttpResponse;
-import com.hsm.connector.http.Httpconnector;
-import com.hsm.connector.http.SocketInputStream;
-
-import javax.servlet.ServletException;
-
-
 public class HttpProcessor {
-	private Httpconnector httpconnector;
-	private HttpRequest request;
-	private HttpRequestLine requestLine = new HttpRequestLine();
+	public static String SHUTDOWN_COMMAND = "/shutdown";
 	//private HttpResponse response;
 	protected String method = null;
 	protected String queryString = null;
 	protected StringManager sm = StringManager.getManager("com.hsm.connector.http");
-	
-	public static String SHUTDOWN_COMMAND = "/shutdown";
+	private Httpconnector httpconnector;
+	private HttpRequest request;
+	private HttpRequestLine requestLine = new HttpRequestLine();
  
 	public HttpProcessor(Httpconnector httpconnector){
 		this.httpconnector = httpconnector;

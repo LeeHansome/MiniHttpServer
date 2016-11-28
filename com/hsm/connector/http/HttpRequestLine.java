@@ -1,7 +1,5 @@
 package com.hsm.connector.http;
 
-import java.net.URLEncoder;
-
 public final class HttpRequestLine {
 	
 	public static final int INITIAL_METHOD_SIZE = 8;
@@ -10,8 +8,14 @@ public final class HttpRequestLine {
 	public static final int MAX_METHOD_SIZE = 1024;
 	public static final int MAX_URL_SIZE = 32768;
 	public static final int MAX_PROTOCOL_SIZE = 1024;
-	
-	public HttpRequestLine(){
+    public char[] method;
+    public int methodEnd;
+    public char[] uri;
+    public int uriEnd;
+    public char[] protocol;
+    public int protocolEnd;
+
+    public HttpRequestLine(){
 		this(new char[INITIAL_METHOD_SIZE],0,new char[INITIAL_URL_SIZE],0,new char[INITIAL_PROTOCOL_SIZE],0);
 	}
 	public HttpRequestLine(char[] method, int methodEnd,char[] url,int urlEnd,char[] protocol,int protocolEnd){
@@ -22,12 +26,6 @@ public final class HttpRequestLine {
 		this.protocol = protocol;
 		this.protocolEnd = protocolEnd;
 	}
-    public char[] method;
-    public int methodEnd;
-    public char[] uri;
-    public int uriEnd;
-    public char[] protocol;
-    public int protocolEnd;
     
     public void recycle(){
     	methodEnd = 0;

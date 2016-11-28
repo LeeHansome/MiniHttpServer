@@ -1,22 +1,15 @@
 package com.hsm.Processor;
 
+import com.hsm.connector.http.*;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandler;
-
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.hsm.connector.http.Constants;
-import com.hsm.connector.http.HttpRequest;
-import com.hsm.connector.http.HttpRequestFacade;
-import com.hsm.connector.http.HttpResponse;
-import com.hsm.connector.http.HttpResponseFacade;
 
 public class ServletProcessor {
 

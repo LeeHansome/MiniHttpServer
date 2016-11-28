@@ -1,11 +1,10 @@
 package com.hsm.connector.http;
 
+import javax.servlet.ServletException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import javax.servlet.ServletException;
 
 public class Httpconnector implements Runnable{
 	boolean stopped = false;

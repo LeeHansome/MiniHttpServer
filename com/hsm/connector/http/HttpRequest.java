@@ -1,32 +1,17 @@
 package com.hsm.connector.http;
 
+import javax.servlet.*;
+import javax.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Collection;
-
-import javax.servlet.AsyncContext;
-import javax.servlet.DispatcherType;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
+import java.util.*;
 
 public class HttpRequest implements HttpServletRequest{
+	protected HashMap headers = new HashMap<>();
+	protected ArrayList cookies = new ArrayList<>();
 	private InputStream input = null;
 	private String uri = "";
 	private String queryString=null;
@@ -35,9 +20,6 @@ public class HttpRequest implements HttpServletRequest{
 	private boolean requestedSessionURL=false;
 	private String method;
 	private String protocol;
-
-	protected HashMap headers = new HashMap<>();
-	protected ArrayList cookies = new ArrayList<>();
 	//protected parameterma
 	public HttpRequest(InputStream  input){
 		this.input = input;
@@ -124,6 +106,13 @@ public class HttpRequest implements HttpServletRequest{
 	public String getCharacterEncoding() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setCharacterEncoding(String arg0)
+			throws UnsupportedEncodingException {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
@@ -215,6 +204,10 @@ public class HttpRequest implements HttpServletRequest{
 		return null;
 	}
 
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
+	}
+
 	@Override
 	public BufferedReader getReader() throws IOException {
 		// TODO Auto-generated method stub
@@ -296,20 +289,13 @@ public class HttpRequest implements HttpServletRequest{
 	@Override
 	public void removeAttribute(String arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setAttribute(String arg0, Object arg1) {
 		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void setCharacterEncoding(String arg0)
-			throws UnsupportedEncodingException {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -355,6 +341,10 @@ public class HttpRequest implements HttpServletRequest{
 		return null;
 	}
 
+	public void setCookies(ArrayList cookies) {
+		this.cookies = cookies;
+	}
+
 	@Override
 	public long getDateHeader(String arg0) {
 		// TODO Auto-generated method stub
@@ -391,6 +381,10 @@ public class HttpRequest implements HttpServletRequest{
 		return null;
 	}
 
+	public void setMethod(String method) {
+		this.method = method;
+	}
+
 	@Override
 	public Part getPart(String arg0) throws IOException, ServletException {
 		// TODO Auto-generated method stub
@@ -421,6 +415,10 @@ public class HttpRequest implements HttpServletRequest{
 		return null;
 	}
 
+	public void setQueryString(String queryString) {
+		this.queryString = queryString;
+	}
+
 	@Override
 	public String getRemoteUser() {
 		// TODO Auto-generated method stub
@@ -443,6 +441,10 @@ public class HttpRequest implements HttpServletRequest{
 	public String getRequestedSessionId() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void setRequestedSessionId(String requestedSessionId) {
+		this.requestedSessionId = requestedSessionId;
 	}
 
 	@Override
@@ -502,18 +504,13 @@ public class HttpRequest implements HttpServletRequest{
 	@Override
 	public void login(String arg0, String arg1) throws ServletException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void logout() throws ServletException {
 		// TODO Auto-generated method stub
-		
-	}
 
-
-	public void setQueryString(String queryString) {
-		this.queryString = queryString;
 	}
 
 	public InputStream getInput() {
@@ -532,28 +529,12 @@ public class HttpRequest implements HttpServletRequest{
 		this.headers = headers;
 	}
 
-	public void setRequestedSessionId(String requestedSessionId) {
-		this.requestedSessionId = requestedSessionId;
-	}
-
-	public void setCookies(ArrayList cookies) {
-		this.cookies = cookies;
-	}
-
 	public boolean isRequestedSessionURL() {
 		return requestedSessionURL;
 	}
 
 	public void setRequestedSessionURL(boolean requestedSessionURL) {
 		this.requestedSessionURL = requestedSessionURL;
-	}
-
-	public void setMethod(String method) {
-		this.method = method;
-	}
-
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
 	}
 
 	public String getUri() {

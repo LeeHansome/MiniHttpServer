@@ -12,15 +12,16 @@ public final class HttpHeader {
 
 
     // ----------------------------------------------------------- Constructors
-
-
+    public char[] name;
+    public int nameEnd;
+    public char[] value;
+    public int valueEnd;
+    protected int hashCode = 0;
     public HttpHeader() {
 
         this(new char[INITIAL_NAME_SIZE], 0, new char[INITIAL_VALUE_SIZE], 0);
 
     }
-
-
     public HttpHeader(char[] name, int nameEnd, char[] value, int valueEnd) {
 
         this.name = name;
@@ -29,8 +30,6 @@ public final class HttpHeader {
         this.valueEnd = valueEnd;
 
     }
-
-
     public HttpHeader(String name, String value) {
 
         this.name = name.toLowerCase().toCharArray();
@@ -39,12 +38,6 @@ public final class HttpHeader {
         this.valueEnd = value.length();
 
     }
-
-    public char[] name;
-    public int nameEnd;
-    public char[] value;
-    public int valueEnd;
-    protected int hashCode = 0;
 
     public void recycle() {
 
