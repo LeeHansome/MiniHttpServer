@@ -14,8 +14,8 @@ import java.net.URLStreamHandler;
 public class ServletProcessor {
 
 	public void servletProcess(HttpRequest request, HttpResponse response) throws ServletException, IOException {
-		String url = request.getUrl();
-		String servletName = url.substring(url.lastIndexOf("/")+1);
+		String uri = request.getUri();
+		String servletName = uri.substring(uri.lastIndexOf("/") + 1);
 		URL[] urls = new URL[1];
 		URLStreamHandler urlStreamHandler = null;
 		URLClassLoader loader = null;

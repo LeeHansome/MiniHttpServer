@@ -37,7 +37,7 @@ public class HttpResponse implements HttpServletResponse{
 
 	public void sendStaticResource(){
 		FileInputStream fis = null;
-		File file = new File(Constants.WEB_ROOT,"/"+request.getUrl());
+		File file = new File(Constants.WEB_ROOT, "/" + request.getUri());
 		if(file.exists()){
 
 			byte[] b = new byte[Buffer_Size];
@@ -65,7 +65,7 @@ public class HttpResponse implements HttpServletResponse{
 				if(fis!=null)
 					try {
 						fis.close();
-					} catch (IOException e) {						// TODO Auto-generated catch block
+					} catch (IOException e) {
 						e.printStackTrace();
 					}
 			}

@@ -24,45 +24,39 @@ public class HttpRequest implements HttpServletRequest{
 	public HttpRequest(InputStream  input){
 		this.input = input;
 	}
-	
-	public void prase(){
-		byte[] b = new byte[2048]; 
-		StringBuffer sb = new StringBuffer();
-		try {
-			int n = input.read(b);
-			for(int i=0;i<n;i++){
-				sb.append((char) b[i]);
-			}
-			praseRequest = sb.toString();
-			uri = praseUrl();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private String praseUrl(){
-		int index1=0,index2=0;
-		index1 = praseRequest.indexOf(" ");
-		if(index1>0){
-			index2 = praseRequest.indexOf(" ",index1+1);	
-			if(index2>index1){
-				return praseRequest.substring(index1+1,index2);				
-			}
-		}
-		return null;
-	}
-	
+
+//	public void prase(){
+//		byte[] b = new byte[2048];
+//		StringBuffer sb = new StringBuffer();
+//		try {
+//			int n = input.read(b);
+//			for(int i=0;i<n;i++){
+//				sb.append((char) b[i]);
+//			}
+//			praseRequest = sb.toString();
+//			uri = praseUrl();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+
+	//	private String praseUrl(){
+//		int index1=0,index2=0;
+//		index1 = praseRequest.indexOf(" ");
+//		if(index1>0){
+//			index2 = praseRequest.indexOf(" ",index1+1);
+//			if(index2>index1){
+//				return praseRequest.substring(index1+1,index2);
+//			}
+//		}
+//		return null;
+//	}
+//
 	public InputStream getIn() {
 		return input;
 	}
 	public void setIn(InputStream in) {
 		this.input = in;
-	}
-	public String getUrl() {
-		return uri;
-	}
-	public void setUrl(String url) {
-		this.uri = url;
 	}
 
 	public String getPraseRequest() {

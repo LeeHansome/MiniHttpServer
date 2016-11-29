@@ -118,7 +118,6 @@ public class SocketInputStream extends InputStream {
 			pos++;
 		}
 		requestLine.uriEnd = readCount - 1;
-
 		// Read protocol
 		maxRead = requestLine.protocol.length;
 		readStart = pos;
@@ -129,7 +128,7 @@ public class SocketInputStream extends InputStream {
 					char[] newProtpcol = new char[2 * maxRead];
 					System.arraycopy(requestLine.protocol, 0, newProtpcol, 0,
 							maxRead);
-					requestLine.uri = newProtpcol;
+					requestLine.protocol = newProtpcol;
 					maxRead = requestLine.protocol.length;
 				} else {
 					throw new IOException(

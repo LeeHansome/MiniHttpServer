@@ -12,21 +12,21 @@ import java.net.Socket;
 
 public class HttpProcessor {
 	public static String SHUTDOWN_COMMAND = "/shutdown";
-	//private HttpResponse response;
 	protected String method = null;
 	protected String queryString = null;
 	protected StringManager sm = StringManager.getManager("com.hsm.connector.http");
-	private Httpconnector httpconnector;
+    private HttpResponse response;
+    private Httpconnector httpconnector;
 	private HttpRequest request;
 	private HttpRequestLine requestLine = new HttpRequestLine();
  
 	public HttpProcessor(Httpconnector httpconnector){
 		this.httpconnector = httpconnector;
 	}
-	
-	
-	public void process(Socket socket) throws IOException, ServletException, ServletException {
-		SocketInputStream input = null;
+
+
+    public void process(Socket socket) throws IOException, ServletException {
+        SocketInputStream input = null;
 		OutputStream ouput = null;
 		try {
 			input = new SocketInputStream(socket.getInputStream(),2048);
@@ -35,12 +35,12 @@ public class HttpProcessor {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		HttpRequest request = new HttpRequest(input);
-		praseRequest(input, ouput);
-		HttpResponse response = new HttpResponse(ouput);
-		response.setRequest(request);
-		if(request.getUrl()!=null&&request.getUrl().startsWith("/servlet")){
-			ServletProcessor servletProcessor = new ServletProcessor();
+        request = new HttpRequest(input);
+        praseRequest(input, ouput);
+        response = new HttpResponse(ouput);
+        response.setRequest(request);
+        if (request.getUri() != null && request.getUri().startsWith("/servlet")) {
+            ServletProcessor servletProcessor = new ServletProcessor();
 			try {
 				servletProcessor.servletProcess(request,response);
 			} catch (ServletException e) {
@@ -63,9 +63,9 @@ public class HttpProcessor {
 	private void praseRequest(SocketInputStream socketInputStream,OutputStream ou) throws IOException, ServletException{
 		socketInputStream.readRequestLine(requestLine);
 		String method = new String(requestLine.method,0,requestLine.methodEnd);
-		String uri = null;
-		String protocol = new String(requestLine.protocol,0,requestLine.protocolEnd);
-		
+        String uri = null;
+        String protocol = new String(requestLine.protocol,0,requestLine.protocolEnd);
+
 		//Validate the incoming request line
 		if(method.length() < 1){
 			throw new ServletException("Missing the HTTP request method");
@@ -94,6 +94,7 @@ public class HttpProcessor {
 				}
 			}
 		}
+
 		//prase any requested session ID out of the request URI
 		String match = ";jsessionid=";
 		int semicolon = uri.indexOf(match);
@@ -114,15 +115,14 @@ public class HttpProcessor {
 			request.setRequestedSessionId(null);
 		}
 		//Normalize URI
-		
 		String normalizedUri = nomallize(uri);
-		((HttpRequest)request).setMethod(method);
-		request.setProtocol(protocol);
+        request.setMethod(method);
+        request.setProtocol(protocol);
 		if(normalizedUri != null){
-			request.setUrl(normalizedUri);
-		}else{
-			request.setUrl(uri);
-		}
+            request.setUri(normalizedUri);
+        }else{
+            request.setUri(uri);
+        }
 		if(normalizedUri == null)
 			throw new ServletException("Invalid URI:"+uri+"'");
 	}
