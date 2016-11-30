@@ -10,23 +10,73 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 
-public class HttpProcessor {
+public class HttpProcessor implements Runnable {
 	public static String SHUTDOWN_COMMAND = "/shutdown";
 	protected String method = null;
 	protected String queryString = null;
 	protected StringManager sm = StringManager.getManager("com.hsm.connector.http");
     private HttpResponse response;
-    private Httpconnector httpconnector;
+	private HttpConnector httpConnector;
 	private HttpRequest request;
 	private HttpRequestLine requestLine = new HttpRequestLine();
- 
-	public HttpProcessor(Httpconnector httpconnector){
-		this.httpconnector = httpconnector;
+	private boolean stopped;
+	private boolean available = false;
+	private Socket socket;
+
+	public HttpProcessor(HttpConnector httpConnector) {
+		this.httpConnector = httpConnector;
 	}
 
 
-    public void process(Socket socket) throws IOException, ServletException {
-        SocketInputStream input = null;
+	synchronized void asign(Socket socket) {
+		while (available) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		this.socket = socket;
+		available = true;
+		notifyAll();
+	}
+
+	@Override
+	public void run() {
+		while (!stopped) {
+			Socket socket = await();
+			if (socket == null) {
+				continue;
+			}
+			try {
+				process(socket);
+				System.out.println("I am the thread:" + Thread.currentThread().getName());
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ServletException e) {
+				e.printStackTrace();
+			}
+			httpConnector.recycle(this);
+		}
+	}
+
+
+	private synchronized Socket await() {
+		while (!available) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		Socket socket = this.socket;
+		available = false;
+		notifyAll();
+		return socket;
+	}
+
+	private void process(Socket socket) throws IOException, ServletException {
+		SocketInputStream input = null;
 		OutputStream ouput = null;
 		try {
 			input = new SocketInputStream(socket.getInputStream(),2048);
@@ -148,6 +198,8 @@ public class HttpProcessor {
 	protected String nomallize(String path) {
 		if(path == null)
 			return null;
+		if (path.equals("/") || path.equals(""))
+			return "index.html";
 		String normalized = path;
 		if(normalized.startsWith("/%7E") || normalized.startsWith("/%7e"))
 			normalized = "/~"+normalized.substring(4);
@@ -193,4 +245,5 @@ public class HttpProcessor {
 			return null;
 		return normalized;
 	}
+
 }
