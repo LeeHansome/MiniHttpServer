@@ -12,7 +12,26 @@ public class HttpConnector implements Runnable {
 	private String scheme = "http";
 	private int maxProcessors = 20;
 	private int curProcessor = 0;
+	private boolean chunkAllowed;
+	private Container container;
+	private int buffSize = 2048;
 	private Stack<HttpProcessor> processors = new Stack<>();
+
+	public Container getContainer() {
+		return container;
+	}
+
+	public void setContainer(Container container) {
+		this.container = container;
+	}
+
+	public boolean isChunkAllowed() {
+		return chunkAllowed;
+	}
+
+	public void setChunkAllowed(boolean chunkAllowed) {
+		this.chunkAllowed = chunkAllowed;
+	}
 
 	public int getMinProcessors() {
 		return minProcessors;
@@ -82,6 +101,14 @@ public class HttpConnector implements Runnable {
 		}
 		Thread t = new Thread(this);
 		t.start();
+	}
+
+	public int getBuffSize() {
+		return buffSize;
+	}
+
+	public void setBuffSize(int buffSize) {
+		this.buffSize = buffSize;
 	}
 
 	public String getScheme() {

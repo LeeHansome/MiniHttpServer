@@ -20,9 +20,28 @@ public class HttpRequest implements HttpServletRequest{
 	private boolean requestedSessionURL=false;
 	private String method;
 	private String protocol;
+	private SocketInputStream steam;
+	private HttpResponse response;
+
 	//protected parameterma
 	public HttpRequest(InputStream  input){
 		this.input = input;
+	}
+
+	public HttpResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(HttpResponse response) {
+		this.response = response;
+	}
+
+	public SocketInputStream getSteam() {
+		return steam;
+	}
+
+	public void setSteam(SocketInputStream steam) {
+		this.steam = steam;
 	}
 
 //	public void prase(){

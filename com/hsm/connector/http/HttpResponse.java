@@ -14,9 +14,27 @@ public class HttpResponse implements HttpServletResponse{
 	private OutputStream ou = null;
 	private HttpRequest request = null;
 	private int Buffer_Size = 1024;
-	
+	private OutputStream stream;
+	private boolean allowChunk;
+
 	public HttpResponse(OutputStream ou){
 		this.ou = ou;
+	}
+
+	public boolean isAllowChunk() {
+		return allowChunk;
+	}
+
+	public void setAllowChunk(boolean allowChunk) {
+		this.allowChunk = allowChunk;
+	}
+
+	public OutputStream getStream() {
+		return stream;
+	}
+
+	public void setStream(OutputStream stream) {
+		this.stream = stream;
 	}
 
 	public HashMap getHeaders() {

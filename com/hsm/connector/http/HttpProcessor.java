@@ -1,7 +1,6 @@
 package com.hsm.connector.http;
 
-import com.hsm.Processor.ServletProcessor;
-import com.hsm.Processor.StaticResourceProcessor;
+import org.apache.catalina.util.FastDateFormat;
 import org.apache.catalina.util.StringManager;
 
 import javax.servlet.ServletException;
@@ -22,6 +21,7 @@ public class HttpProcessor implements Runnable {
 	private boolean stopped;
 	private boolean available = false;
 	private Socket socket;
+	private int status;
 
 	public HttpProcessor(HttpConnector httpConnector) {
 		this.httpConnector = httpConnector;
@@ -76,20 +76,60 @@ public class HttpProcessor implements Runnable {
 	}
 
 	private void process(Socket socket) throws IOException, ServletException {
+		boolean ok = true;
+		boolean finishRepose = true;
 		SocketInputStream input = null;
-		OutputStream ouput = null;
+		OutputStream output = null;
 		try {
-			input = new SocketInputStream(socket.getInputStream(),2048);
-			ouput = socket.getOutputStream();
+			input = new SocketInputStream(socket.getInputStream(), httpConnector.getBuffSize());
+			output = socket.getOutputStream();
 			
 		} catch (IOException e1) {
+			ok = false;
 			e1.printStackTrace();
 		}
-        request = new HttpRequest(input);
-        praseRequest(input, ouput);
-        response = new HttpResponse(ouput);
-        response.setRequest(request);
-        if (request.getUri() != null && request.getUri().startsWith("/servlet")) {
+		boolean keepAlive = true;
+		request = new HttpRequest(input);
+		response = new HttpResponse(output);
+		while (!stopped && ok && keepAlive) {
+			finishRepose = true;
+			request.setSteam(input);
+			request.setResponse(response);
+			response.setRequest(request);
+			response.setStream(output);
+			response.setHeader("Server", "SERVER_INFO");
+			if (ok) {
+				praseConnection(socket);
+				praseRequest(input, output);
+				if (!request.getProtocol().startsWith("HTTP/0"))
+					praseHeaders(input);
+				if (http11) {
+					ackRequest(output);
+				}
+				if (httpConnector.isChunkAllowed())
+					response.setAllowChunk(true);
+				response.setHeader("Date", FastDateFormat.getDateInstance());
+				httpConnector.getContainer().invoke(input, output);
+			}
+			if (finishRepose) {
+				response.finshRespone();
+				request.finshRequest();
+				output.flush();
+				if ("close".equals(response.getHeader("Connection"))) {
+					keepAlive = false;
+				}
+				status = Constants.PROCESSOR_IDLE;
+				request.recycle();
+				response.recycle();
+			}
+			shutDown(input);
+			socket.close();
+
+
+		}
+
+    /*    response.setRequest(request);
+		if (request.getUri() != null && request.getUri().startsWith("/servlet")) {
             ServletProcessor servletProcessor = new ServletProcessor();
 			try {
 				servletProcessor.servletProcess(request,response);
@@ -108,7 +148,7 @@ public class HttpProcessor implements Runnable {
 				socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 	private void praseRequest(SocketInputStream socketInputStream,OutputStream ou) throws IOException, ServletException{
 		socketInputStream.readRequestLine(requestLine);
@@ -177,7 +217,7 @@ public class HttpProcessor implements Runnable {
 			throw new ServletException("Invalid URI:"+uri+"'");
 	}
 
-	private void praseHeader(SocketInputStream input) throws IOException, ServletException {
+	private void praseHeaders(SocketInputStream input) throws IOException, ServletException {
 		while(true){
 			HttpHeader header = new HttpHeader();
 			input.readHeader(header);
