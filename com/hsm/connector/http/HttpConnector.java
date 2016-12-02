@@ -16,6 +16,39 @@ public class HttpConnector implements Runnable {
 	private Container container;
 	private int buffSize = 2048;
 	private Stack<HttpProcessor> processors = new Stack<>();
+	private int port = 8080;
+
+	public boolean isStopped() {
+		return stopped;
+	}
+
+	public void setStopped(boolean stopped) {
+		this.stopped = stopped;
+	}
+
+	public int getCurProcessor() {
+		return curProcessor;
+	}
+
+	public void setCurProcessor(int curProcessor) {
+		this.curProcessor = curProcessor;
+	}
+
+	public Stack<HttpProcessor> getProcessors() {
+		return processors;
+	}
+
+	public void setProcessors(Stack<HttpProcessor> processors) {
+		this.processors = processors;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
 
 	public Container getContainer() {
 		return container;
@@ -52,7 +85,6 @@ public class HttpConnector implements Runnable {
 	@Override
 	public void run() {
 		ServerSocket serverSocket = null;
-		int port = 8080;
 		try{
 			InetAddress inetAddress = InetAddress.getByName("127.0.0.1");
 			serverSocket = new ServerSocket(port, 1 ,inetAddress );

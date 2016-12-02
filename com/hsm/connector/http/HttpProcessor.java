@@ -1,7 +1,8 @@
 package com.hsm.connector.http;
 
-import org.apache.catalina.util.FastDateFormat;
+
 import org.apache.catalina.util.StringManager;
+import org.apache.tomcat.util.http.FastHttpDateFormat;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -22,6 +23,10 @@ public class HttpProcessor implements Runnable {
 	private boolean available = false;
 	private Socket socket;
 	private int status;
+	private int proxyPort = socket.getPort();
+	private int serverPort = httpConnector.getPort();
+	private boolean keepAlive;
+	private boolean sendAck;
 
 	public HttpProcessor(HttpConnector httpConnector) {
 		this.httpConnector = httpConnector;
@@ -108,7 +113,7 @@ public class HttpProcessor implements Runnable {
 				}
 				if (httpConnector.isChunkAllowed())
 					response.setAllowChunk(true);
-				response.setHeader("Date", FastDateFormat.getDateInstance());
+				response.setHeader("Date", FastHttpDateFormat.getCurrentDate());
 				httpConnector.getContainer().invoke(input, output);
 			}
 			if (finishRepose) {
@@ -150,6 +155,16 @@ public class HttpProcessor implements Runnable {
 			e.printStackTrace();
 		}*/
 	}
+
+	private void praseConnection(Socket socket) {
+		request.setInetAddress(socket.getInetAddress());
+		if (proxyPort != 0)
+			request.setPort(proxyPort);
+		else
+			request.setPort(serverPort);
+		request.setSocket(socket);
+	}
+
 	private void praseRequest(SocketInputStream socketInputStream,OutputStream ou) throws IOException, ServletException{
 		socketInputStream.readRequestLine(requestLine);
 		String method = new String(requestLine.method,0,requestLine.methodEnd);
@@ -232,6 +247,32 @@ public class HttpProcessor implements Runnable {
 			String name = new String(header.name,0,header.nameEnd);
 			String value = new String(header.value,0,header.valueEnd);
 			request.addHeader(name,value);
+			if (header.equals(DefaultHeaders.AUTHORIZATION_NAME)) {
+				request.setAuthorization(value);
+			} else if (header.equals(DefaultHeaders.ACCEPT_LANGUAGE)) {
+				praseAcceptLanguage(value);
+			} else if (header.equals(DefaultHeaders.COOKIE_NAME)) {
+				//prase cookie
+			} else if (header.equals(DefaultHeaders.CONTENT_LENGTH_NAME)) {
+				//get content length
+			} else if (header.equals(DefaultHeaders.CONTENT_TYPE_NAME)) {
+				request.setContentType(value);
+			} else if (header.equals(DefaultHeaders.HOST_NAME)) {
+				//get host name
+			} else if (header.equals(DefaultHeaders.CONNECTION_NAME)) {
+				if (header.valueEquals(DefaultHeaders.CONNECTION_CLOSE_VALUE)) {
+					keepAlive = false;
+					response.setHeader("Connection", "close");
+				}
+			} else if (header.equals(DefaultHeaders.EXPECT_NAME)) {
+				if (header.valueEquals(DefaultHeaders.EXPECT_100_VALUE))
+					sendAck = true;
+				else
+					throw new ServletException(sm.getString("httpProcessor.parseHeaders.unknownExpectation"));
+			} else if (header.equals(DefaultHeaders.TRANSFER_ENCODING_NAME)) {
+				//request.setTransferEncoding(header);
+			}
+			//request.nextHeader();
 		}
 	}
 

@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.security.Principal;
 import java.util.*;
 
@@ -22,10 +24,47 @@ public class HttpRequest implements HttpServletRequest{
 	private String protocol;
 	private SocketInputStream steam;
 	private HttpResponse response;
+	private int port;
+	private Socket socket;
+	private InetAddress inetAddress;
+	private String authorization;
+	private String contentType;
 
 	//protected parameterma
 	public HttpRequest(InputStream  input){
 		this.input = input;
+	}
+
+	public String getAuthorization() {
+		return authorization;
+	}
+
+	public void setAuthorization(String authorization) {
+		this.authorization = authorization;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public Socket getSocket() {
+		return socket;
+	}
+
+	public void setSocket(Socket socket) {
+		this.socket = socket;
+	}
+
+	public InetAddress getInetAddress() {
+		return inetAddress;
+	}
+
+	public void setInetAddress(InetAddress inetAddress) {
+		this.inetAddress = inetAddress;
 	}
 
 	public HttpResponse getResponse() {
@@ -44,21 +83,6 @@ public class HttpRequest implements HttpServletRequest{
 		this.steam = steam;
 	}
 
-//	public void prase(){
-//		byte[] b = new byte[2048];
-//		StringBuffer sb = new StringBuffer();
-//		try {
-//			int n = input.read(b);
-//			for(int i=0;i<n;i++){
-//				sb.append((char) b[i]);
-//			}
-//			praseRequest = sb.toString();
-//			uri = praseUrl();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-
 	//	private String praseUrl(){
 //		int index1=0,index2=0;
 //		index1 = praseRequest.indexOf(" ");
@@ -74,6 +98,22 @@ public class HttpRequest implements HttpServletRequest{
 	public InputStream getIn() {
 		return input;
 	}
+
+//	public void prase(){
+//		byte[] b = new byte[2048];
+//		StringBuffer sb = new StringBuffer();
+//		try {
+//			int n = input.read(b);
+//			for(int i=0;i<n;i++){
+//				sb.append((char) b[i]);
+//			}
+//			praseRequest = sb.toString();
+//			uri = praseUrl();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+
 	public void setIn(InputStream in) {
 		this.input = in;
 	}
@@ -97,6 +137,7 @@ public class HttpRequest implements HttpServletRequest{
 			values.add(value);
 		}
 	}
+
 	@Override
 	public AsyncContext getAsyncContext() {
 		// TODO Auto-generated method stub
@@ -143,6 +184,10 @@ public class HttpRequest implements HttpServletRequest{
 	public String getContentType() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
 	@Override
