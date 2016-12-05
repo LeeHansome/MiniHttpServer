@@ -27,6 +27,7 @@ public class HttpProcessor implements Runnable {
 	private int serverPort = httpConnector.getPort();
 	private boolean keepAlive;
 	private boolean sendAck;
+	private boolean http11;
 
 	public HttpProcessor(HttpConnector httpConnector) {
 		this.httpConnector = httpConnector;
@@ -108,13 +109,15 @@ public class HttpProcessor implements Runnable {
 				praseRequest(input, output);
 				if (!request.getProtocol().startsWith("HTTP/0"))
 					praseHeaders(input);
+				if (request.getProtocol().equals("http/1.1"))
+					http11 = true;
 				if (http11) {
-					ackRequest(output);
+//					ackRequest(output);
 				}
 				if (httpConnector.isChunkAllowed())
 					response.setAllowChunk(true);
 				response.setHeader("Date", FastHttpDateFormat.getCurrentDate());
-				httpConnector.getContainer().invoke(input, output);
+				httpConnector.getSimpleContainer().invoke(request, response);
 			}
 			if (finishRepose) {
 				response.finshRespone();

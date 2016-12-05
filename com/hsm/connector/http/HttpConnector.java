@@ -13,8 +13,8 @@ public class HttpConnector implements Runnable {
 	private int maxProcessors = 20;
 	private int curProcessor = 0;
 	private boolean chunkAllowed;
-	private Container container;
-	private int buffSize = 2048;
+    private SimpleContainer simpleContainer;
+    private int buffSize = 2048;
 	private Stack<HttpProcessor> processors = new Stack<>();
 	private int port = 8080;
 
@@ -50,13 +50,13 @@ public class HttpConnector implements Runnable {
 		this.port = port;
 	}
 
-	public Container getContainer() {
-		return container;
-	}
+    public SimpleContainer getSimpleContainer() {
+        return simpleContainer;
+    }
 
-	public void setContainer(Container container) {
-		this.container = container;
-	}
+    public void setSimpleContainer(SimpleContainer simpleContainer) {
+        this.simpleContainer = simpleContainer;
+    }
 
 	public boolean isChunkAllowed() {
 		return chunkAllowed;
