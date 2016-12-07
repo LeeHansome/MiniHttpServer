@@ -23,9 +23,9 @@ public class HttpProcessor implements Runnable {
 	private boolean available = false;
 	private Socket socket;
 	private int status;
-	private int proxyPort = socket.getPort();
-	private int serverPort = httpConnector.getPort();
-	private boolean keepAlive;
+    private int proxyPort;
+    private int serverPort;
+    private boolean keepAlive;
 	private boolean sendAck;
 	private boolean http11;
 
@@ -104,14 +104,20 @@ public class HttpProcessor implements Runnable {
 			response.setRequest(request);
 			response.setStream(output);
 			response.setHeader("Server", "SERVER_INFO");
+
 			if (ok) {
 				praseConnection(socket);
 				praseRequest(input, output);
-				if (!request.getProtocol().startsWith("HTTP/0"))
-					praseHeaders(input);
-				if (request.getProtocol().equals("http/1.1"))
-					http11 = true;
-				if (http11) {
+                System.out.println(request.getProtocol());
+                String method = new String(requestLine.method, 0, requestLine.methodEnd);
+                String protocol = new String(requestLine.protocol, 0, requestLine.protocolEnd);
+                request.setProtocol(protocol);
+                request.setMethod(method);
+//				if (request.getProtocol().startsWith("http/0"))
+//					praseHeaders(input);
+//				if (request.getProtocol().equals("http/1.1"))
+//					http11 = true;
+                if (http11) {
 //					ackRequest(output);
 				}
 				if (httpConnector.isChunkAllowed())
@@ -120,16 +126,16 @@ public class HttpProcessor implements Runnable {
 				httpConnector.getSimpleContainer().invoke(request, response);
 			}
 			if (finishRepose) {
-				response.finshRespone();
-				request.finshRequest();
-				output.flush();
+//				response.finshRespone();
+//				request.finshRequest();
+                output.flush();
 				if ("close".equals(response.getHeader("Connection"))) {
 					keepAlive = false;
 				}
 				status = Constants.PROCESSOR_IDLE;
-				request.recycle();
-				response.recycle();
-			}
+//				request.recycle();
+//				response.recycle();
+            }
 			shutDown(input);
 			socket.close();
 
@@ -159,6 +165,12 @@ public class HttpProcessor implements Runnable {
 		}*/
 	}
 
+    private void shutDown(SocketInputStream input) throws IOException {
+        if (input != null) {
+            input.close();
+        }
+    }
+
 	private void praseConnection(Socket socket) {
 		request.setInetAddress(socket.getInetAddress());
 		if (proxyPort != 0)
@@ -170,12 +182,11 @@ public class HttpProcessor implements Runnable {
 
 	private void praseRequest(SocketInputStream socketInputStream,OutputStream ou) throws IOException, ServletException{
 		socketInputStream.readRequestLine(requestLine);
-		String method = new String(requestLine.method,0,requestLine.methodEnd);
         String uri = null;
-        String protocol = new String(requestLine.protocol,0,requestLine.protocolEnd);
-
-		//Validate the incoming request line
-		if(method.length() < 1){
+        //Validate the incoming request line
+        String method = new String(requestLine.method, 0, requestLine.methodEnd);
+        String protocol = new String(requestLine.protocol, 0, requestLine.protocolEnd);
+        if(method.length() < 1){
 			throw new ServletException("Missing the HTTP request method");
 		}else if(requestLine.uriEnd < 1){
 			throw new ServletException("Missing HTTP request URI");
@@ -224,9 +235,9 @@ public class HttpProcessor implements Runnable {
 		}
 		//Normalize URI
 		String normalizedUri = nomallize(uri);
-        request.setMethod(method);
-        request.setProtocol(protocol);
-		if(normalizedUri != null){
+//        request.setMethod(method);
+//        request.setProtocol(protocol);
+        if(normalizedUri != null){
             request.setUri(normalizedUri);
         }else{
             request.setUri(uri);
@@ -253,8 +264,8 @@ public class HttpProcessor implements Runnable {
 			if (header.equals(DefaultHeaders.AUTHORIZATION_NAME)) {
 				request.setAuthorization(value);
 			} else if (header.equals(DefaultHeaders.ACCEPT_LANGUAGE)) {
-				praseAcceptLanguage(value);
-			} else if (header.equals(DefaultHeaders.COOKIE_NAME)) {
+                //praseAcceptLanguage(value);
+            } else if (header.equals(DefaultHeaders.COOKIE_NAME)) {
 				//prase cookie
 			} else if (header.equals(DefaultHeaders.CONTENT_LENGTH_NAME)) {
 				//get content length
